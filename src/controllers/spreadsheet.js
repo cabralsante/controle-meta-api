@@ -56,11 +56,49 @@ module.exports = class SpreadsheetController {
     }
   }
 
-  async updateRows(req, res) {
+  async updateRows_(req, res) {
     try {
       const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
       const { values, cellRange } = req.body;
       const range = `'Página1'!${cellRange}`;
+      const updateRows = await googleSheets.spreadsheets.values.update({
+        auth,
+        spreadsheetId,
+        range,
+        valueInputOption: "USER_ENTERED",
+        resource: {
+          values
+        }
+      });
+      res.status(201).send(updateRows.data);
+
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  async updateRows(req, res) {
+    try {
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const { values } = req.body;
+      const existingValues = await googleSheets.spreadsheets.values.get({
+        auth,
+        spreadsheetId,
+        range: "Página1",
+        valueRenderOption: "UNFORMATTED_VALUE",
+        dateTimeRenderOption: "FORMATTED_STRING"
+      });
+
+      let range = ""; // RANGE PARA ATUALIZAR OS DADOS
+      for (let i = 1; i < existingValues.data.values.length; i++) { // PERCORRENDO TODAS AS LINHAS
+        if (existingValues.data.values[i][1] === values[0][0]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO ATUALIZADO
+          range = `'Página1'!D${i + 1}:G${i + 1}`; // SETANDO O RANGE PARA ATUALIZAR OS DADOS
+          break; // PARANDO O LOOP
+        }
+      }
+      values[0].shift(); // REMOVENDO O ID
+
       const updateRows = await googleSheets.spreadsheets.values.update({
         auth,
         spreadsheetId,
