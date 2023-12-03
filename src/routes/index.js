@@ -8,7 +8,7 @@ router.get("/metadata", controller.getMetadata);
 
 router.get("/getRows", controller.getRows);
 
-router.put("/updateRows", controller.updateRows);
+router.post("/updateRows", controller.updateRows);
 
 router.post("/addRow", controller.appendRows);
 

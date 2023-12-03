@@ -82,6 +82,8 @@ module.exports = class SpreadsheetController {
     try {
       const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
       const { values } = req.body;
+
+      console.log("Pegando os valores do Google Sheets\n")
       const existingValues = await googleSheets.spreadsheets.values.get({
         auth,
         spreadsheetId,
@@ -89,7 +91,9 @@ module.exports = class SpreadsheetController {
         valueRenderOption: "UNFORMATTED_VALUE",
         dateTimeRenderOption: "FORMATTED_STRING"
       });
+      console.log("Valores:", existingValues.data.values)
 
+      console.log("Percorrendo as linhas\n")
       let range = ""; // RANGE PARA ATUALIZAR OS DADOS
       for (let i = 1; i < existingValues.data.values.length; i++) { // PERCORRENDO TODAS AS LINHAS
         if (existingValues.data.values[i][1] === values[0][0]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO ATUALIZADO
@@ -98,7 +102,10 @@ module.exports = class SpreadsheetController {
         }
       }
       values[0].shift(); // REMOVENDO O ID
+      console.log("Range: ", range)
+      console.log("Valores: ", values)
 
+      console.log("Atualizando os dados no Google Sheets\n")
       const updateRows = await googleSheets.spreadsheets.values.update({
         auth,
         spreadsheetId,
