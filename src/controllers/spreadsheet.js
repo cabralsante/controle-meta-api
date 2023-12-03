@@ -105,7 +105,7 @@ module.exports = class SpreadsheetController {
 
       if (!range) { // SE NÃO ENCONTRAR O ID, RETORNA ERRO
         console.log("Prontuário não encontrado")
-        return res.status(404).send({ error: "Prontuário não encontrado" });
+        return res.status(404);
       }
 
       values[0].shift(); // REMOVENDO O ID
