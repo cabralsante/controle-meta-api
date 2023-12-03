@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { json } = require('body-parser');
 const { google } = require('googleapis');
 
 async function getAuthSheets() {
@@ -104,7 +105,7 @@ module.exports = class SpreadsheetController {
 
       if (!range) { // SE NÃO ENCONTRAR O ID, RETORNA ERRO
         console.log("Prontuário não encontrado")
-        throw new Error("Prontuário não encontrado");
+        return res.status(404).send({ error: "Prontuário não encontrado" });
       }
 
       values[0].shift(); // REMOVENDO O ID
@@ -126,7 +127,7 @@ module.exports = class SpreadsheetController {
     } catch (err) {
 
       console.log(err);
-      return res.status(400).send(err.message);
+      throw err;
     }
   }
 
