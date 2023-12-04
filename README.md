@@ -27,8 +27,9 @@ Este é o README.md do projeto Controle de Agendamento API.
 - SPREADSHEET_ID
 - SECRET (Combinação de Segurança para geração do Token)
 - PORT
-- DATABASE
-- USERNAME
-- PASSWORD
-- HOSTNAME
-- DIALECT
+- DBDATABASE
+- DBUSERNAME
+- DBPASSWORD
+- DBHOSTNAME
+- DBDIALECT
+- DBPORT

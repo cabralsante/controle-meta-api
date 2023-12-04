@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserControler = require('../controllers/UserController');
-const { Auth } = require('../middlewares/Auth');
+const {Auth} = require('../middleware/Auth');
 
 const controller = new UserControler();
 
@@ -11,6 +11,8 @@ router.post("/create", controller.create);
 
 router.post("/login", controller.login);
 
-router.put("/update/:id", Auth, controller.update);
+router.put("/update/:id", function(req, res, next){
+  Auth(req, res, next);
+}, controller.update);
 
 module.exports = router;

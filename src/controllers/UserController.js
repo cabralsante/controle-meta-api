@@ -44,9 +44,10 @@ module.exports = class UserController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
-    const { username, email, password, office } = req.body;
     try {
+      console.log("Tentando encontrar usuário...")
+      const { id } = req.params;
+      const { username, email, password, office } = req.body;
       const user = await User.findOne({
         where: {
           id: id,
@@ -56,8 +57,10 @@ module.exports = class UserController {
       if (!user) {
         return res.status(404).send('Usuário não encontrado!');
       }
+      console.log("Usuário encontrado");
 
-      if(email !== user.email) {
+      if(email && email !== user.email) {
+        console.log("Email diferente do atual:", email);
         const userExists = await User.findOne({
           where: {
             email: email,
@@ -65,12 +68,21 @@ module.exports = class UserController {
         });
 
         if(userExists) {
+          console.log("Email já está em uso!");
           return res.status(422).send('Email já está em uso!');
         }
       }
+      let hashPassword;
+      if(password && password === user.password) {
+        console.log("Senhas iguais!");
+        return res.status(422).send('Senha igual a atual!');
 
-      const hashPassword = await bcrypt.hash(password, 10);
+      } else if(password && password !== user.password) {
+        console.log("Senhas diferentes!");
+        hashPassword = await bcrypt.hash(password, 10);
+      }
 
+      console.log("Tentando atualizar usuário...")
       const updatedUser = await User.update({
         username,
         email,
@@ -81,8 +93,9 @@ module.exports = class UserController {
           id: id,
         },
       });
+      console.log("Usuário atualizado");
 
-      return res.status(200).send(updatedUser);
+      return res.status(200).send("Usuário atualizado com sucesso!");
     } catch (err) {
       console.log(err);
       return res.status(500).send('Erro interno do servidor!');
