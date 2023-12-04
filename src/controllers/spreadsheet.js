@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // VARIÁVEIS DE AMBIENTE: SPREADSHEET_ID
 const { google } = require('googleapis');
 
 async function getAuthSheets() {
