@@ -126,7 +126,9 @@ module.exports = class SpreadsheetController {
     } catch (err) {
 
       console.log(err);
-      return res.status(404).send(err.message);
+      return res.status(404).json({
+        message: err.message
+      });
     }
   }
 
