@@ -1,5 +1,6 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const AuthenticationService = require('../services/AuthenticationService');
 
 module.exports = class UserController {
@@ -20,7 +21,9 @@ module.exports = class UserController {
         return res.status(422).send('Email já está em uso!');
       }
 
-      const hashPassword = await bcrypt.hash(password, 10);
+      // const hashPassword = await bcrypt.hash(password, 10);
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
 
       const newUser = await User.create({
         username,
