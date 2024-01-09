@@ -8,6 +8,15 @@ const host = process.env.DBHOSTNAME;
 const dialect = process.env.DBDIALECT;
 const port = process.env.DBPORT;
 
+console.log("Informações do banco de dados:",{
+  database,
+  username,
+  password,
+  host,
+  dialect,
+  port,
+});
+
 const databaseConfig = new Sequelize(database, username, password, {
   port,
   host,

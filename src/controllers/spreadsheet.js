@@ -1,14 +1,29 @@
 require('dotenv').config(); // VARIÁVEIS DE AMBIENTE: SPREADSHEET_ID
 const { google } = require('googleapis');
 
-async function getAuthSheets() {
+async function getAuthSheets(service) {
+  console.log("Pegando as credenciais do Google Sheets\n")
+  console.log("Serviço:", service)
+
   const auth = new google.auth.GoogleAuth({
-    keyFile: 'credentials.json',
+    keyFile: `${service}.json`,
     scopes: 'https://www.googleapis.com/auth/spreadsheets'
   });
   const client = await auth.getClient();
   const googleSheets = google.sheets({ version: 'v4', auth: client });
-  const spreadsheetId = process.env.SPREADSHEET_ID;
+  let spreadsheetId;
+
+  if (service === "asb") {
+    spreadsheetId = process.env.ASB_ID
+  } else if (service === "agend") {
+    spreadsheetId = process.env.AGEND_ID
+  } else if (service === "comp") {
+    spreadsheetId = process.env.COMP_ID
+  } else {
+    throw new Error("Serviço não encontrado");
+  }
+
+  console.log("Spreadsheet ID:", spreadsheetId)
 
   return {
     auth,
@@ -25,7 +40,8 @@ module.exports = class SpreadsheetController {
 
   async getMetadata(req, res) {
     try {
-      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const typeReq = req.headers['typereq'];
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const metadata = await googleSheets.spreadsheets.get({
         auth,
         spreadsheetId,
@@ -40,7 +56,8 @@ module.exports = class SpreadsheetController {
 
   async getRows(req, res) {
     try {
-      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const typeReq = req.headers['typereq'];
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const getRows = await googleSheets.spreadsheets.values.get({
         auth,
         spreadsheetId,
@@ -58,7 +75,8 @@ module.exports = class SpreadsheetController {
 
   async updateRows_(req, res) {
     try {
-      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const typeReq = req.headers['typereq'];
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const { values, cellRange } = req.body;
       const range = `'Página1'!${cellRange}`;
       const updateRows = await googleSheets.spreadsheets.values.update({
@@ -80,7 +98,8 @@ module.exports = class SpreadsheetController {
 
   async updateRows(req, res) {
     try {
-      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const typeReq = req.headers['typereq'];
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const { values } = req.body;
 
       console.log("Pegando os valores do Google Sheets\n")
@@ -134,7 +153,8 @@ module.exports = class SpreadsheetController {
 
   async appendRows(req, res) {
     try {
-      const { googleSheets, auth, spreadsheetId } = await getAuthSheets();
+      const typeReq = req.headers['typereq'];
+      const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const { values } = req.body;
       const appendRows = await googleSheets.spreadsheets.values.append({
         auth,
