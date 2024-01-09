@@ -2,20 +2,35 @@
 
 1. Entrar no site do Console Cloud da Google e logar com a conta:
  - https://console.cloud.google.com/
+   
 2. Criar um novo projeto;
+   
 3. Ir em Biblioteca e procurar por Google Sheets API e instalar;
+   
 4. Seguir para a aba Credenciais;
+   
   4.1. Clicar em CRIAR CREDENCIAIS;
+  
   4.2. Acessar CRIAR CONTA DE SERVIÇO;
+  
     4.2.1. Preencher detalhes da conta de serviço;
+    
       4.2.1.1. Copiar email gerado;
+      
     4.2.2. Na seção "Conceda a essa conta de serviço acesso ao projeto (Opcional)" selecione o dropdown titulado como "Papel";
+    
       4.2.2.1 Selecionar a opção "Em uso" e ao lado, "Propietário"
+      
     4.2.3. A terceira etapa do preenchimento é opcional;
+    
 5. Após isso, ainda na aba de Credenciais, clicar na conta criada;
+
 6. Seguir para a aba "Chaves";
+   
   6.1. Clicar em Adicionar Chave e em seguida Criar nova chave;
+   
   6.2. Mantenha JSON marcado e clique em cirar;
+   
 7. Guarde o arquivo JSON na pasta raiz do projeto;
 
 
