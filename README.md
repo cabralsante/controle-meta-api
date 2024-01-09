@@ -7,11 +7,11 @@
    
 3. Ir em Biblioteca e procurar por Google Sheets API e instalar;
    
-4. Seguir para a aba Credenciais;
+  4. Seguir para a aba Credenciais;
    
-  4.1. Clicar em CRIAR CREDENCIAIS;
+    4.1. Clicar em CRIAR CREDENCIAIS;
   
-  4.2. Acessar CRIAR CONTA DE SERVIÇO;
+    4.2. Acessar CRIAR CONTA DE SERVIÇO;
   
     4.2.1. Preencher detalhes da conta de serviço;
     
@@ -27,9 +27,9 @@
 
 6. Seguir para a aba "Chaves";
    
-  6.1. Clicar em Adicionar Chave e em seguida Criar nova chave;
-   
-  6.2. Mantenha JSON marcado e clique em cirar;
+       6.1. Clicar em Adicionar Chave e em seguida Criar nova chave;
+        
+       6.2. Mantenha JSON marcado e clique em cirar;
    
 7. Guarde o arquivo JSON na pasta raiz do projeto;
 
