@@ -102,7 +102,7 @@ module.exports = class SpreadsheetController {
       const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const { values } = req.body;
 
-      console.log("Pegando os valores do Google Sheets\n")
+      console.log("Pegando os valores do Google Sheets para dar Update (Reagendamento por enquanto)\n")
       const existingValues = await googleSheets.spreadsheets.values.get({
         auth,
         spreadsheetId,
@@ -115,8 +115,8 @@ module.exports = class SpreadsheetController {
       console.log("Percorrendo as linhas\n")
       let range = ""; // RANGE PARA ATUALIZAR OS DADOS
       for (let i = 1; i < existingValues.data.values.length; i++) { // PERCORRENDO TODAS AS LINHAS
-        if (existingValues.data.values[i][1] === values[0][0]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO ATUALIZADO
-          range = `'Página1'!D${i + 1}:G${i + 1}`; // SETANDO O RANGE PARA ATUALIZAR OS DADOS
+        if (existingValues.data.values[i][2] === values[0][0]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO ATUALIZADO
+          range = `'Página1'!F${i + 1}:I${i + 1}`; // SETANDO O RANGE PARA ATUALIZAR OS DADOS
           break; // PARANDO O LOOP
         }
       }
@@ -140,7 +140,7 @@ module.exports = class SpreadsheetController {
           values
         }
       });
-      res.status(201).send(updateRows.data);
+      res.status(200).send(updateRows.data);
 
     } catch (err) {
 
@@ -156,6 +156,49 @@ module.exports = class SpreadsheetController {
       const typeReq = req.headers['typereq'];
       const { googleSheets, auth, spreadsheetId } = await getAuthSheets(typeReq);
       const { values } = req.body;
+
+      console.log("Pegando os valores do Google Sheets para dar Append\n")
+      const existingValues = await googleSheets.spreadsheets.values.get({
+        auth,
+        spreadsheetId,
+        range: "Página1",
+        valueRenderOption: "UNFORMATTED_VALUE",
+        dateTimeRenderOption: "FORMATTED_STRING"
+      });
+
+      console.log("Dados:", existingValues.data.values[1][2], values[0][2])
+      
+      console.log("Percorrendo as linhas\n")
+      let exist = false; // SE O ID JÁ EXISTE
+      let nowDate = new Date(); // DATA ATUAL
+      for (let i = 1; i < existingValues.data.values.length; i++) { // PERCORRENDO TODAS AS LINHAS
+        if (existingValues.data.values[i][2] === values[0][2]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO PROCURADO
+          console.log("ID encontrado:", existingValues.data.values[i][2])
+          console.log("Data do ID encontrado:", existingValues.data.values[i][0])
+          
+          if(typeReq === "agend") {
+            exist = true;
+            break;
+          } else if(typeReq === "comp") {
+            if (nowDate.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" }) === existingValues.data.values[i][0]) {
+              exist = true;
+              break;
+            }
+          }
+        }
+      }
+
+      console.log("Exist:", exist)
+      if (exist) { // SE O ID JÁ EXISTE, RETORNA ERRO
+        if(typeReq === "agend") {
+          console.log("Prontuário já existe")
+          throw new Error("Prontuário já existe");
+        } else if(typeReq === "comp") {
+          console.log("Prontuário já cadastrado hoje")
+          throw new Error("Prontuário já cadastrado hoje");
+        }
+      }
+
       const appendRows = await googleSheets.spreadsheets.values.append({
         auth,
         spreadsheetId,
@@ -165,11 +208,14 @@ module.exports = class SpreadsheetController {
           values
         }
       })
-      res.send(appendRows.data);
+      res.status(201).send(appendRows.data);
 
     } catch (err) {
+
       console.log(err);
-      throw err;
+      return res.status(404).json({
+        message: err.message
+      });
     }
   }
 }
