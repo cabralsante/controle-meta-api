@@ -116,7 +116,7 @@ module.exports = class SpreadsheetController {
       let range = ""; // RANGE PARA ATUALIZAR OS DADOS
       for (let i = 1; i < existingValues.data.values.length; i++) { // PERCORRENDO TODAS AS LINHAS
         if (existingValues.data.values[i][2] === values[0][0]) { // VERIFICANDO SE O ID DA LINHA É IGUAL AO ID QUE ESTÁ SENDO ATUALIZADO
-          range = `'Página1'!F${i + 1}:I${i + 1}`; // SETANDO O RANGE PARA ATUALIZAR OS DADOS
+          range = `'Página1'!G${i + 1}:J${i + 1}`; // SETANDO O RANGE PARA ATUALIZAR OS DADOS
           break; // PARANDO O LOOP
         }
       }
