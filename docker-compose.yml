@@ -1,0 +1,14 @@
+# Exemplo de arquivo docker-compose.yml
+# Altere todos os valores que estão com # para os valores do seu projeto
+services:
+  app:
+    build: .
+    command: "npm run start"
+    working_dir: /home/node/app
+    environment:
+      - TZ=${GENERIC_TIMEZONE} # Fuso horário da aplicação
+      - AGEND_ID=${AGEND_ID}
+      - ASB_ID=${ASB_ID}
+      - COMP_ID=${COMP_ID}
+    ports:
+      - "8000:3000" # Altere a primeira porta para a que deseja expor
